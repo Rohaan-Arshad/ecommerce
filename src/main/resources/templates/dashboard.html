@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card wide">
+    <h1>Dashboard</h1>
+    <p class="sub">You are signed in. 🎉</p>
+
+    <dl class="info-grid">
+        <dt>Name</dt>
+        <dd th:text="${fullName}">Jane Doe</dd>
+
+        <dt>Email</dt>
+        <dd th:text="${email}">jane@example.com</dd>
+
+        <dt>Signed in via</dt>
+        <dd><span class="badge" th:text="${authProvider}">LOCAL</span></dd>
+
+        <dt>Roles</dt>
+        <dd>
+            <span class="badge" th:each="role : ${roles}" th:text="${role}">CUSTOMER</span>
+        </dd>
+
+        <dt>Session started</dt>
+        <dd th:text="${loginAt}">—</dd>
+    </dl>
+
+    <form th:action="@{/logout}" method="post">
+        <button class="btn secondary" type="submit">Sign out</button>
+    </form>
+</div>
+</body>
+</html>

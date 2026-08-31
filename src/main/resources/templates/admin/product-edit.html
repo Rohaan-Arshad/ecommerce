@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · Edit product</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <div class="topbar">
+            <h1 th:text="${product.name}">Product</h1>
+            <a class="btn secondary" th:href="@{/admin/products}">← Back</a>
+        </div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+        <div th:if="${ok}" class="alert ok" th:text="${ok}"></div>
+
+        <!-- ===================== Core details ===================== -->
+        <h2>Details</h2>
+        <form th:action="@{/admin/products/{id}(id=${product.id})}" method="post" style="max-width:640px">
+            <label>Name</label><input name="name" th:value="${product.name}" required/>
+            <label>SKU</label><input name="sku" th:value="${product.sku}" required/>
+            <label>Category</label>
+            <select name="categoryId" required>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                        th:selected="${product.category != null and product.category.id == c.id}"></option>
+            </select>
+            <label>Product type</label><input name="productType" th:value="${product.productType}"/>
+            <label>Brand</label><input name="brand" th:value="${product.brand}"/>
+            <label>Price</label><input name="price" th:value="${product.price}" required/>
+            <label>Discount price</label><input name="discountPrice" th:value="${product.discountPrice}"/>
+            <label>Status</label>
+            <select name="status">
+                <option th:each="s : ${ {'ACTIVE','INACTIVE','OUT_OF_STOCK'} }" th:value="${s}" th:text="${s}"
+                        th:selected="${product.status == s}"></option>
+            </select>
+            <label>Description</label>
+            <textarea name="description" rows="4" style="width:100%" th:text="${product.description}"></textarea>
+            <label>Attributes (one per line, <code>name: value</code>)</label>
+            <textarea name="attributes" rows="4" style="width:100%" th:text="${attrText}"></textarea>
+            <button class="btn" type="submit">Save details</button>
+        </form>
+
+        <!-- ===================== Images ===================== -->
+        <h2 style="margin-top:36px">Images</h2>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px">
+            <div th:each="img : ${product.images}"
+                 style="border:1px solid #334155;border-radius:12px;padding:8px;width:150px">
+                <img th:src="${img.imageUrl}" alt=""
+                     style="width:100%;height:120px;object-fit:cover;border-radius:8px"/>
+                <div style="margin-top:6px">
+                    <span th:if="${img.primary}" class="badge ok">Primary</span>
+                </div>
+                <div class="actions" style="margin-top:8px">
+                    <form th:unless="${img.primary}"
+                          th:action="@{/admin/products/{id}/images/{imgId}/primary(id=${product.id},imgId=${img.id})}"
+                          method="post">
+                        <button class="btn secondary" type="submit" style="padding:6px 10px">Set primary</button>
+                    </form>
+                    <form th:action="@{/admin/products/{id}/images/{imgId}/delete(id=${product.id},imgId=${img.id})}"
+                          method="post">
+                        <button class="btn secondary" type="submit" style="padding:6px 10px">Delete</button>
+                    </form>
+                </div>
+            </div>
+            <p th:if="${product.images.isEmpty()}" style="color:#94a3b8">No images yet.</p>
+        </div>
+        <form th:action="@{/admin/products/{id}/images(id=${product.id})}" method="post"
+              enctype="multipart/form-data" class="actions">
+            <input type="file" name="files" accept="image/*" multiple required/>
+            <button class="btn" type="submit">Upload images</button>
+        </form>
+
+        <!-- ===================== Variants ===================== -->
+        <h2 style="margin-top:36px">Variants (colour / size)</h2>
+        <table class="grid">
+            <thead>
+            <tr><th>SKU</th><th>Colour</th><th>Size</th><th>Price</th><th>Discount</th><th>Stock</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="v : ${product.variants}">
+                <td th:text="${v.sku}"></td>
+                <td th:text="${v.color} ?: '—'"></td>
+                <td th:text="${v.size} ?: '—'"></td>
+                <td th:text="${v.price} ?: '(product)'"></td>
+                <td th:text="${v.discountPrice} ?: '—'"></td>
+                <td th:text="${v.stockQuantity}"></td>
+                <td><span class="badge" th:classappend="${v.status == 'ACTIVE'} ? 'ok' : 'warn'" th:text="${v.status}"></span></td>
+                <td>
+                    <form th:action="@{/admin/products/{id}/variants/{vid}/delete(id=${product.id},vid=${v.id})}" method="post">
+                        <button class="btn secondary" type="submit" style="padding:6px 10px">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            <tr th:if="${product.variants.isEmpty()}"><td colspan="8" style="color:#94a3b8">No variants.</td></tr>
+            </tbody>
+        </table>
+
+        <h3 style="margin-top:20px">Add variant</h3>
+        <form th:action="@{/admin/products/{id}/variants(id=${product.id})}" method="post" class="actions">
+            <input name="sku" placeholder="Variant SKU" required style="width:150px"/>
+            <input name="color" placeholder="Colour" style="width:110px"/>
+            <input name="size" placeholder="Size" style="width:90px"/>
+            <input name="price" placeholder="Price" style="width:100px"/>
+            <input name="discountPrice" placeholder="Discount" style="width:100px"/>
+            <input name="stock" type="number" value="0" min="0" style="width:90px"/>
+            <select name="status" style="width:140px">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="OUT_OF_STOCK">OUT_OF_STOCK</option>
+            </select>
+            <button class="btn" type="submit">Add</button>
+        </form>
+
+        <!-- ===================== Danger zone ===================== -->
+        <h2 style="margin-top:36px">Danger zone</h2>
+        <form th:action="@{/admin/products/{id}/delete(id=${product.id})}" method="post"
+              onsubmit="return confirm('Delete this product and its images?');">
+            <button class="btn secondary" type="submit">Delete product</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

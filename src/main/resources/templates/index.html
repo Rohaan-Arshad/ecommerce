@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>E-Commerce · Sign in</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card">
+    <h1>Welcome 👋</h1>
+    <p class="sub">Choose how you would like to continue.</p>
+
+    <div th:if="${param.logout}" class="alert ok">You have been signed out.</div>
+
+    <a class="btn provider" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
+    <a class="btn provider" th:href="@{/oauth2/authorization/microsoft}">Continue with Microsoft</a>
+
+    <div class="divider">or</div>
+
+    <a class="btn" th:href="@{/login}">Sign in with email</a>
+    <a class="btn secondary" th:href="@{/register}">Create an account</a>
+</div>
+</body>
+</html>

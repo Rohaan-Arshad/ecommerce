@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <h1>Dashboard</h1>
+        <p class="sub">Overview of all accounts.</p>
+
+        <div class="cards">
+            <div class="stat"><div class="num" th:text="${stats.total}">0</div><div class="label">Total users</div></div>
+            <div class="stat"><div class="num" th:text="${stats.admins}">0</div><div class="label">Admins</div></div>
+            <div class="stat"><div class="num" th:text="${stats.local}">0</div><div class="label">Local</div></div>
+            <div class="stat"><div class="num" th:text="${stats.google}">0</div><div class="label">Google</div></div>
+            <div class="stat"><div class="num" th:text="${stats.microsoft}">0</div><div class="label">Microsoft</div></div>
+            <div class="stat"><div class="num" th:text="${stats.blocked}">0</div><div class="label">Blocked</div></div>
+        </div>
+
+        <a class="btn" style="width:auto;display:inline-block" th:href="@{/admin/users}">Manage users →</a>
+    </main>
+</div>
+</body>
+</html>

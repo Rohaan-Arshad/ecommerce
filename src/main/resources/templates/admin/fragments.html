@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- Left sidebar menu. `active` marks the current page. -->
+<nav th:fragment="sidebar(active)" class="sidebar">
+    <div class="brand">🛍️ Admin</div>
+    <a th:href="@{/admin/dashboard}" th:classappend="${active == 'dashboard'} ? 'active'">Dashboard</a>
+    <a th:href="@{/admin/products}" th:classappend="${active == 'products'} ? 'active'">Products</a>
+    <a th:href="@{/admin/users}" th:classappend="${active == 'users'} ? 'active'">Users</a>
+    <div class="spacer"></div>
+    <a th:href="@{/dashboard}">My account</a>
+    <form th:action="@{/logout}" method="post" style="margin:0">
+        <button type="submit" class="sidebar-logout"
+                style="all:unset;display:block;padding:10px 14px;cursor:pointer;color:#94a3b8;">Sign out</button>
+    </form>
+</nav>
+</body>
+</html>

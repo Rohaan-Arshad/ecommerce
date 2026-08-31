@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · Products</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <div class="topbar">
+            <h1>Products</h1>
+            <a class="btn" th:href="@{/admin/products/new}">+ New product</a>
+        </div>
+
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+        <div th:if="${ok}" class="alert ok" th:text="${ok}"></div>
+
+        <table class="grid">
+            <thead>
+            <tr><th></th><th>ID</th><th>Name</th><th>SKU</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="p : ${products}">
+                <td>
+                    <img th:if="${p.primaryImage != null}" th:src="${p.primaryImage.imageUrl}"
+                         alt="" style="width:44px;height:44px;object-fit:cover;border-radius:8px;"/>
+                </td>
+                <td th:text="${p.id}">1</td>
+                <td th:text="${p.name}">Name</td>
+                <td th:text="${p.sku}">SKU</td>
+                <td th:text="${p.category != null ? p.category.name : '—'}">Cat</td>
+                <td>
+                    <span th:text="${p.effectivePrice}">0</span>
+                    <small th:if="${p.discountPrice != null}" style="color:#94a3b8;text-decoration:line-through"
+                           th:text="${p.price}"></small>
+                </td>
+                <td><span class="badge" th:classappend="${p.status == 'ACTIVE'} ? 'ok' : 'warn'" th:text="${p.status}">ACTIVE</span></td>
+                <td><a th:href="@{/admin/products/{id}(id=${p.id})}">Manage</a></td>
+            </tr>
+            <tr th:if="${products.isEmpty()}"><td colspan="8" style="color:#94a3b8">No products yet.</td></tr>
+            </tbody>
+        </table>
+
+        <h2 style="margin-top:32px">Quick add category</h2>
+        <form th:action="@{/admin/products/categories}" method="post" class="actions">
+            <input name="name" placeholder="Category name" required style="width:220px"/>
+            <input name="description" placeholder="Description (optional)" style="width:260px"/>
+            <button class="btn" type="submit">Add category</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>

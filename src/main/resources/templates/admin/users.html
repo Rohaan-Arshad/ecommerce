@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · Users</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <h1>Users</h1>
+        <p class="sub">All registered accounts.</p>
+
+        <table class="grid">
+            <thead>
+            <tr><th>ID</th><th>Name</th><th>Email</th><th>Provider</th><th>Roles</th><th>Status</th><th></th></tr>
+            </thead>
+            <tbody>
+            <tr th:each="u : ${users}">
+                <td th:text="${u.id}">1</td>
+                <td th:text="${u.fullName}">Jane Doe</td>
+                <td th:text="${u.email}">jane@x.com</td>
+                <td><span class="badge" th:text="${u.authProvider}">LOCAL</span></td>
+                <td>
+                    <span class="badge" th:each="r : ${u.roles}" th:text="${r.name}">CUSTOMER</span>
+                </td>
+                <td>
+                    <span class="badge" th:classappend="${u.status.name() == 'BLOCKED'} ? 'warn' : 'ok'"
+                          th:text="${u.status}">ACTIVE</span>
+                </td>
+                <td><a th:href="@{/admin/users/{id}(id=${u.id})}">View</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </main>
+</div>
+</body>
+</html>

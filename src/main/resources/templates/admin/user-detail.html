@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · User</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <div class="topbar">
+            <h1 th:text="${user.fullName}">Jane Doe</h1>
+            <a class="btn secondary" th:href="@{/admin/users}">← Back to users</a>
+        </div>
+
+        <dl class="info-grid">
+            <dt>ID</dt><dd th:text="${user.id}">1</dd>
+            <dt>Email</dt><dd th:text="${user.email}">jane@x.com</dd>
+            <dt>Phone</dt><dd th:text="${user.phone} ?: '—'">—</dd>
+            <dt>Provider</dt><dd><span class="badge" th:text="${user.authProvider}">LOCAL</span></dd>
+            <dt>Email verified</dt><dd th:text="${user.emailVerified}">false</dd>
+            <dt>Status</dt>
+            <dd><span class="badge" th:classappend="${user.status.name() == 'BLOCKED'} ? 'warn' : 'ok'"
+                      th:text="${user.status}">ACTIVE</span></dd>
+            <dt>Roles</dt>
+            <dd><span class="badge" th:each="r : ${user.roles}" th:text="${r.name}">CUSTOMER</span></dd>
+            <dt>Created</dt><dd th:text="${user.createdAt}">—</dd>
+        </dl>
+
+        <!-- Admin actions on this user -->
+        <div class="actions">
+            <form th:action="@{/admin/users/{id}/promote(id=${user.id})}" method="post">
+                <button class="btn" type="submit">Make admin</button>
+            </form>
+            <form th:action="@{/admin/users/{id}/demote(id=${user.id})}" method="post">
+                <button class="btn secondary" type="submit">Remove admin</button>
+            </form>
+            <form th:if="${user.status.name() != 'BLOCKED'}"
+                  th:action="@{/admin/users/{id}/block(id=${user.id})}" method="post">
+                <button class="btn secondary" type="submit">Block</button>
+            </form>
+            <form th:if="${user.status.name() == 'BLOCKED'}"
+                  th:action="@{/admin/users/{id}/unblock(id=${user.id})}" method="post">
+                <button class="btn" type="submit">Unblock</button>
+            </form>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sign in</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body>
+<div class="card">
+    <h1>Sign in</h1>
+    <p class="sub">Use your email and password.</p>
+
+    <div th:if="${param.registered}" class="alert ok">Account created. Please sign in.</div>
+    <div th:if="${param.error}" class="alert error">Sign-in with the external provider failed. Try again.</div>
+    <div th:if="${error}" class="alert error" th:text="${error}">Error</div>
+
+    <form th:action="@{/login}" method="post">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" th:value="${email}" required autofocus/>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required/>
+
+        <button class="btn" type="submit">Sign in</button>
+    </form>
+
+    <div class="divider">or</div>
+
+    <a class="btn provider" th:href="@{/oauth2/authorization/google}">Continue with Google</a>
+    <a class="btn provider" th:href="@{/oauth2/authorization/microsoft}">Continue with Microsoft</a>
+
+    <span class="muted-link">No account? <a th:href="@{/register}">Create one</a></span>
+</div>
+</body>
+</html>

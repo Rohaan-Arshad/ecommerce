@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Admin · New product</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+</head>
+<body class="admin">
+<div class="admin-shell">
+    <nav th:replace="~{admin/fragments :: sidebar(${active})}"></nav>
+    <main class="main">
+        <div class="topbar">
+            <h1>New product</h1>
+            <a class="btn secondary" th:href="@{/admin/products}">← Back</a>
+        </div>
+        <div th:if="${error}" class="alert error" th:text="${error}"></div>
+        <p class="sub">Create the core details. You can add variants and images after saving.</p>
+
+        <form th:action="@{/admin/products}" method="post" style="max-width:640px">
+            <label>Name</label><input name="name" required/>
+            <label>SKU</label><input name="sku" required/>
+            <label>Category</label>
+            <select name="categoryId" required>
+                <option value="" disabled selected>Select…</option>
+                <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"></option>
+            </select>
+            <label>Product type</label><input name="productType" placeholder="e.g. T-Shirt, Phone"/>
+            <label>Brand</label><input name="brand"/>
+            <label>Price</label><input name="price" required placeholder="0.00"/>
+            <label>Discount price (optional)</label><input name="discountPrice" placeholder="0.00"/>
+            <label>Status</label>
+            <select name="status">
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+                <option value="OUT_OF_STOCK">OUT_OF_STOCK</option>
+            </select>
+            <label>Description</label>
+            <textarea name="description" rows="4" style="width:100%"></textarea>
+            <label>Attributes (one per line, <code>name: value</code>)</label>
+            <textarea name="attributes" rows="4" style="width:100%"
+                      placeholder="Material: Cotton&#10;Weight: 200g"></textarea>
+            <button class="btn" type="submit">Create product</button>
+        </form>
+    </main>
+</div>
+</body>
+</html>
